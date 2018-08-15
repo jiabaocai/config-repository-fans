@@ -1,0 +1,172 @@
+logging:
+  level:
+    root: info
+
+server:
+  port: 8763
+  tomcat:
+    max-threads: 1000
+    min-spare-threads: 64
+
+spring:
+  application:
+    name: api-gateway
+  redis:
+    cluster:
+      nodes: 10.100.110.25:7000,10.100.110.25:7001,10.100.110.26:7002,10.100.110.26:7003,10.100.110.27:7004,10.100.110.27:7005
+    pool:
+      max-active: 400
+      max-idle: 90
+      min-idle: 10
+      max-wait: -1
+    timeout: 300
+    user-redis:
+      host: 10.100.110.32
+      port: 6379
+      sentinel:
+        master: mymaster
+        nodes: 10.100.110.33:6379
+  http:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 500MB
+  zipkin:
+      enabled: false
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+ribbon:
+  ReadTimeout: 60000
+  ConnectTimeout: 60000
+  MaxConnectionsPerHost: 500
+
+zuul:
+  # 信号隔离
+  semaphore:
+    max-semaphores: 3000
+  max:
+    host:
+      connections: 1000
+  host:
+    connect-timeout-millis: 10000
+    socket-timeout-millis: 60000
+    max-total-connections: 1000
+    max-per-route-connections: 100
+  prefix: /api
+  sensitiveHeaders:
+  routes:
+    comment:
+      path: /comment/**
+      serviceId: news-comment
+      stripPrefix: false # 表示转发时附带前缀
+    comment1:
+      path: /staticComment/**
+      serviceId: news-comment
+      stripPrefix: false # 表示转发时附带前缀
+    comment2:
+      path: /shareLog/**
+      serviceId: news-comment
+      stripPrefix: false # 表示转发时附带前缀
+
+    content:
+      path: /contents/**
+      serviceId: news-content
+      stripPrefix: false # 表示转发时附带前缀
+      sensitiveHeaders:
+      ignored-headers:
+      customSensitiveHeaders: true
+    content2:
+      path: /topic/**
+      serviceId: news-content
+      stripPrefix: false # 表示转发时附带前缀
+    content3:
+      path: /score/**
+      serviceId: news-content
+      stripPrefix: false # 表示转发时附带前缀
+    content4:
+      path: /push/**
+      serviceId: news-content
+      stripPrefix: false # 表示转发时附带前缀
+    content5:
+      path: /banner/**
+      serviceId: news-content
+      stripPrefix: false # 表示转发时附带前缀
+
+    search:
+      path: /search/**
+      serviceId: news-search
+      stripPrefix: false # 表示转发时附带前缀
+
+    user:
+      path: /user/**
+      serviceId: news-user
+      stripPrefix: false # 表示转发时附带前缀
+#      sensitiveHeaders: Authorization,X-Device-Info
+#      customSensitiveHeaders: true
+#      sensitiveHeaders: Cookie,Set-Cookie,Authorization
+    user1:
+      path: /point/**
+      serviceId: news-user
+      stripPrefix: false # 表示转发时附带前缀
+    user2:
+      path: /task/**
+      serviceId: news-user
+      stripPrefix: false # 表示转发时附带前缀
+    user3:
+      path: /third/**
+      serviceId: news-user
+      stripPrefix: false # 表示转发时附带前缀
+    user4:
+      path: /edushi/**
+      serviceId: news-user
+      stripPrefix: false # 表示转发时附带前缀
+
+    wechat:
+      path: /wechat/**
+      serviceId: news-user
+      stripPrefix: false # 表示转发时附带前缀
+
+    file:
+      path: /file/**
+      serviceId: news-user
+      stripPrefix: false # 表示转发时附带前缀
+
+    wemedia:
+      path: /manages/media/**
+      serviceId: m-wemedia
+      stripPrefix: false # 表示转发时附带前缀
+
+    manage:
+      path: /manages/**
+      serviceId: news-manage
+      stripPrefix: false # 表示转发时附带前缀
+
+    pound-manage:
+      path: /pound/manage/**
+      serviceId: mt-manage
+      stripPrefix: false # 表示转发时附带前缀
+
+    pound-collect:
+      path: /pound/collect/**
+      serviceId: mt-collect
+      stripPrefix: false # 表示转发时附带前缀
+
+eureka:
+  instance:
+    prefer-ip-address: true # 将IP注册到 Eureka
+  client:
+    serviceUrl:
+      defaultZone: http://10.100.110.20:8761/eureka/
+endpoints:
+  actuator:
+    sensitive: false
+  info:
+    sensitive: false
+  #endpoints.info.sensitive=false
+  #endpoints.health.sensitive=false
+#      defaultZone: http://l`ocalhost:8761/eureka/

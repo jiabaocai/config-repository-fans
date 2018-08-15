@@ -1,0 +1,23 @@
+logging:
+  level:
+    root: info
+
+server:
+  port: 8411
+  tomcat:
+    max-threads: 2000
+
+spring:
+  application:
+    name: zipkin-server
+  http:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 500MB
+
+eureka:
+  instance:
+    prefer-ip-address: true # 将IP注册到 Eureka
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.115.103:8761/eureka/

@@ -1,0 +1,218 @@
+logging:
+  level:
+    root: info
+
+server:
+  port: 8763
+  tomcat:
+    max-threads: 1000
+    min-spare-threads: 64
+
+spring:
+  application:
+    name: api-gateway
+  http:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 500MB
+  redis:
+    cluster:
+      nodes: 192.168.115.106:7000,192.168.115.106:7001,192.168.115.107:7002,192.168.115.107:7003,192.168.115.108:7004,192.168.115.108:7005
+      max-redirects: 8
+    pool:
+      max-active: 400
+      max-wait: -1
+      max-idle: 90
+      min-idle: 10
+    timeout: 300
+    user-redis:
+      host: 192.168.115.104
+      port: 6379
+      sentinel:
+        master: mymaster
+        nodes: 192.168.115.104:6380
+  zipkin:
+    base-url: http://ZIPKIN-SERVER/
+    sender:
+      type: web
+  sleuth:
+    sampler:
+      percentage: 1
+    
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+
+ribbon:
+  ReadTimeout: 5000
+  ConnectTimeout: 500
+  MaxConnectionsPerHost: 300
+  MaxAutoRetriesNextServer: 6
+  MaxAutoRetries: 1
+  okhttp:
+    enabled: true
+    
+zuul:
+  # 信号隔离
+  semaphore:
+    max-semaphores: 3000
+  max:
+    host:
+      connections: 500
+  host:
+    connect-timeout-millis: 10000
+    socket-timeout-millis: 60000
+    max-total-connections: 500
+    max-per-route-connections: 500
+  prefix: /api
+  sensitiveHeaders:
+  routes:
+    # 重定向接口文档
+    api-docs-comments:
+      path: /comments/v2/api-docs
+      serviceId: news-comment
+      stripPrefix: false
+    api-docs-contents:
+      path: /contents/v2/api-docs
+      serviceId: news-content
+      stripPrefix: false
+    api-docs-search:
+      path: /search/v2/api-docs
+      serviceId: news-search
+      stripPrefix: false
+    api-docs-users:
+      path: /users/v2/api-docs
+      serviceId: news-user
+      stripPrefix: false
+    api-docs-manages:
+      path: /manages/v2/api-docs
+      serviceId: news-manage
+      stripPrefix: false
+    api-docs-wemedia:
+      path: /wemedia/v2/api-docs
+      serviceId: m-wemedia
+      stripPrefix: false  
+    api-docs-payments:
+      path: /payments/v2/api-docs
+      serviceId: news-payment
+      stripPrefix: false
+
+    comment:
+      path: /comment/**
+      serviceId: news-comment
+      stripPrefix: false # 表示转发时附带前缀
+    comment1:
+      path: /staticComment/**
+      serviceId: news-comment
+      stripPrefix: false # 表示转发时附带前缀
+    comment2:
+      path: /shareLog/**
+      serviceId: news-comment
+      stripPrefix: false # 表示转发时附带前缀
+
+    content:
+      path: /contents/**
+      serviceId: news-content
+      stripPrefix: false # 表示转发时附带前缀
+      sensitiveHeaders:
+      ignored-headers:
+      customSensitiveHeaders: true
+    content2:
+      path: /topic/**
+      serviceId: news-content
+      stripPrefix: false # 表示转发时附带前缀
+    content3:
+      path: /score/**
+      serviceId: news-content
+      stripPrefix: false # 表示转发时附带前缀
+    content4:
+      path: /push/**
+      serviceId: news-content
+      stripPrefix: false # 表示转发时附带前缀
+    content5:
+      path: /banner/**
+      serviceId: news-content
+      stripPrefix: false # 表示转发时附带前缀
+
+    search:
+      path: /search/**
+      serviceId: news-search
+      stripPrefix: false # 表示转发时附带前缀
+
+    user:
+      path: /user/**
+      serviceId: news-user
+      stripPrefix: false # 表示转发时附带前缀
+    user1:
+      path: /point/**
+      serviceId: news-user
+      stripPrefix: false # 表示转发时附带前缀
+#      sensitiveHeaders: Authorization,X-Device-Info
+#      customSensitiveHeaders: true
+#      sensitiveHeaders: Cookie,Set-Cookie,Authorization
+    user2:
+      path: /task/**
+      serviceId: news-user
+      stripPrefix: false # 表示转发时附带前缀
+    user3:
+      path: /third/**
+      serviceId: news-user
+      stripPrefix: false # 表示转发时附带前缀
+    user4:
+      path: /edushi/**
+      serviceId: news-user
+      stripPrefix: false # 表示转发时附带前缀
+
+    wechat:
+      path: /wechat/**
+      serviceId: news-user
+      stripPrefix: false # 表示转发时附带前缀
+
+    file:
+      path: /file/**
+      serviceId: news-user
+      stripPrefix: false # 表示转发时附带前缀
+
+    wemedia:
+      path: /manages/media/**
+      serviceId: m-wemedia
+      stripPrefix: false # 表示转发时附带前缀  
+
+    manage:
+      path: /manages/**
+      serviceId: news-manage
+      stripPrefix: false # 表示转发时附带前缀
+      
+    pound-manage:
+      path: /pound/manage/**
+      serviceId: mt-manage
+      stripPrefix: false # 表示转发时附带前缀
+      
+      
+    pound-collect:
+      path: /pound/collect/**
+      serviceId: mt-collect
+      stripPrefix: false # 表示转发时附带前缀  
+      
+eureka:
+  instance:
+    prefer-ip-address: true # 将IP注册到 Eureka
+  client:
+    serviceUrl:
+      defaultZone: http://192.168.115.103:8761/eureka/
+endpoints:
+  actuator:
+    sensitive: false
+  info:
+    sensitive: false
+  #endpoints.info.sensitive=false
+  #endpoints.health.sensitive=false
+#      defaultZone: http://localhost:8761/eureka/
+swagger:
+  description: Swagger-UI-3
+  base-package: com.ald.cloud
+
